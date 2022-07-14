@@ -144,7 +144,9 @@ class _HomePageState extends State<HomePage> {
 
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(UserProfile.route);
+                  Navigator.of(context)
+                      .push(UserProfile.route)
+                      .then((_) => setState(() {}));
                 },
                 child: FutureBuilder(
                     future: findProfilePic(),
