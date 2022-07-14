@@ -11,6 +11,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^3.3.14
   cloud_firestore: ^3.1.18
+  firebase_core: ^1.6.0
+  firebase_storage: ^10.0.3
+  file_picker: ^4.0.3
+  image_picker: ^0.8.5+3
+  path: ^1.8.1
+  font_awesome_flutter:
   faker: ^2.0.0
   floating_bottom_navigation_bar: ^1.5.2
   google_fonts: ^3.0.1

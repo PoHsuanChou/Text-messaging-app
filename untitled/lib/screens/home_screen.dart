@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/app_theme.dart';
@@ -23,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   ];
   int currentIndex = 0;
   final pageController = PageController();
+  String picture = "";
+  final useremail = FirebaseAuth.instance.currentUser?.email;
 
   void onTap(int index) {
     pageController.jumpToPage(index);
@@ -32,6 +36,35 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       currentIndex = index;
     });
+  }
+
+  // choosePic() {
+  //   if (picture == "") {
+  //     return const AssetImage('assets/images/user1.png');
+  //   } else {
+  //     return NetworkImage(picture);
+  //   }
+  // }
+  choosePic() {
+    if (picture == "") {
+      return 'assets/images/user1.png';
+    } else {
+      // return Uri.parse(picture).toString();
+      return picture.toString();
+    }
+  }
+
+  Future findProfilePic() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(useremail)
+          .get()
+          .then((snapshot) => {picture = snapshot.data()!["profilePicURL"]});
+    } catch (e) {
+      // ignore: avoid_print
+      print(e.toString());
+    }
   }
 
   @override
@@ -83,18 +116,46 @@ class _HomePageState extends State<HomePage> {
           Hero(
             tag: 'hero-profile-picture',
             child: Padding(
-              padding: const EdgeInsets.only(right: 24, top: 12),
-              child: CircleAvatar(
-                radius: 26,
-                backgroundColor: Color.fromARGB(255, 222, 187, 83),
-                child: Avatar.small(
-                  url: 'assets/images/user1.png',
-                  onTap: () {
-                    Navigator.of(context).push(UserProfile.route);
-                  },
+                padding: const EdgeInsets.only(right: 24, top: 12),
+                child: CircleAvatar(
+                    radius: 26,
+                    backgroundColor: Color.fromARGB(255, 222, 187, 83),
+                    child: FutureBuilder(
+                        future: findProfilePic(),
+                        builder: (context, snapshot) {
+                          return Avatar.small(
+                            url: choosePic(),
+                            onTap: () {
+                              Navigator.of(context).push(UserProfile.route);
+                            },
+                          );
+                        }))
+
+                // child: CircleAvatar(
+                //   radius: 26,
+                //   backgroundColor: Color.fromARGB(255, 222, 187, 83),
+                //   child: Avatar.small(
+                //     url: 'assets/images/user1.png',
+                //     onTap: () {
+                //       Navigator.of(context).push(UserProfile.route);
+                //     },
+                //   ),
+                // ),
+
+                // child: GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context).push(UserProfile.route);
+                //   },
+                //   child: FutureBuilder(
+                //       future: findProfilePic(),
+                //       builder: (context, snapshot) {
+                //         return CircleAvatar(
+                //           radius: 80,
+                //           backgroundImage: choosePic(),
+                //         );
+                //       }),
+                // ),
                 ),
-              ),
-            ),
           ),
         ],
       ),

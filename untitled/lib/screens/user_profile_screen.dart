@@ -184,13 +184,11 @@
 //   }
 // }
 
-
-
-
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:untitled/app_theme.dart';
+import 'package:untitled/screens/user_setting.dart';
 
 import '../widgets/widgets.dart';
 
@@ -203,10 +201,27 @@ class UserProfile extends StatefulWidget {
   @override
   State<UserProfile> createState() => _UserProfileState();
 }
-  class _UserProfileState extends State<UserProfile> {
-    Future<void> _signOut() async {
-      await FirebaseAuth.instance.signOut();
+
+class _UserProfileState extends State<UserProfile> {
+  Future<void> _signOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
+
+  final useremail = FirebaseAuth.instance.currentUser?.email;
+  String picture = "";
+  Future findProfilePic() async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(useremail)
+          .get()
+          .then((snapshot) => {picture = snapshot.data()!["profilePicURL"]});
+    } catch (e) {
+      // ignore: avoid_print
+      print(e.toString());
     }
+  }
+
   @override
   Widget build(BuildContext context) {
     final borderRadius = BorderRadius.circular(20);
@@ -239,7 +254,7 @@ class UserProfile extends StatefulWidget {
                 child: IconBackground(
                     icon: Icons.settings,
                     onTap: () {
-                      print('Setting');
+                      Text("goto setting");
                     }),
               ),
             ),
@@ -274,10 +289,18 @@ class UserProfile extends StatefulWidget {
                                 borderRadius: borderRadius,
                                 child: SizedBox.fromSize(
                                   size: Size.fromRadius(32),
-                                  child: Image.asset(
-                                    'assets/images/user1.png',
-                                    fit: BoxFit.cover,
+                                  child: FutureBuilder(
+                                    future: findProfilePic(),
+                                    builder: (context, snapshot) {
+                                      return CircleAvatar(
+                                          radius: 80.0,
+                                          backgroundImage: choosePic());
+                                    },
                                   ),
+                                  // child: Image.asset(
+                                  //   'assets/images/user1.png',
+                                  //   fit: BoxFit.cover,
+                                  // ),
                                 ),
                               ),
                             ),
@@ -304,6 +327,11 @@ class UserProfile extends StatefulWidget {
                     GestureDetector(
                         onTap: () {
                           print('edit profile');
+
+                          Navigator.of(context)
+                              .push(UserSetting.route)
+                              .then((_) => setState(() => {}));
+                          // Navigator.of(context).push(UsersSetting.route);
                         },
                         child: Icon(Icons.arrow_forward_ios_rounded))
                   ],
@@ -374,7 +402,11 @@ class UserProfile extends StatefulWidget {
     );
   }
 
-
+  choosePic() {
+    if (picture == "") {
+      return const AssetImage('assets/images/user1.png');
+    } else {
+      return NetworkImage(picture);
+    }
   }
-
-
+}

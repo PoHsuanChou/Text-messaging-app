@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _ageController = TextEditingController();
-
+  final userEmail = FirebaseAuth.instance.currentUser?.email; //
   @override
   void dispose() {
     _emailController.dispose();
@@ -37,8 +37,9 @@ class _RegisterPageState extends State<RegisterPage> {
       //create user
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
-          password: _passwordController.text.trim()
-      );
+          password: _passwordController.text.trim());
+          
+
       // add user details
       addUserDetails(
         _firstNameController.text.trim(),
@@ -49,13 +50,27 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future addUserDetails(String firstName, String lastName, String email, int age) async{
-    await FirebaseFirestore.instance.collection('users').add({
-      'fist name':firstName,
-      'last name':lastName,
-      'age':age,
-      'email':email,
+  // Future addUserDetails(
+  //     String firstName, String lastName, String email, int age) async {
+  //   await FirebaseFirestore.instance.collection('users').add({
+  //     'fist name': firstName,
+  //     'last name': lastName,
+  //     'age': age,
+  //     'email': email,
+  //   });
+  // }
+  Future addUserDetails(
+      String firstName, String lastName, String email, int age) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_emailController.text.trim())
+        .set({
+      'fist name': firstName,
+      'last name': lastName,
+      'age': age,
+      'email': email,
     });
+    print(_emailController.text.trim());
   }
 
   bool passwordComfirmed() {
@@ -77,8 +92,6 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
-
                 Text(
                   'Hello Again!',
                   style: GoogleFonts.bebasNeue(
