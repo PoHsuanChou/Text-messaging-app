@@ -38,21 +38,21 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // choosePic() {
-  //   if (picture == "") {
-  //     return const AssetImage('assets/images/user1.png');
-  //   } else {
-  //     return NetworkImage(picture);
-  //   }
-  // }
   choosePic() {
     if (picture == "") {
-      return 'assets/images/user1.png';
+      return const AssetImage('assets/images/user1.png');
     } else {
-      // return Uri.parse(picture).toString();
-      return picture.toString();
+      return NetworkImage(picture);
     }
   }
+  // choosePic() {
+  //   if (picture == "") {
+  //     return 'assets/images/user1.png';
+  //   } else {
+  //     // return Uri.parse(picture).toString();
+  //     return picture.toString();
+  //   }
+  // }
 
   Future findProfilePic() async {
     try {
@@ -116,46 +116,46 @@ class _HomePageState extends State<HomePage> {
           Hero(
             tag: 'hero-profile-picture',
             child: Padding(
-                padding: const EdgeInsets.only(right: 24, top: 12),
-                child: CircleAvatar(
-                    radius: 26,
-                    backgroundColor: Color.fromARGB(255, 222, 187, 83),
-                    child: FutureBuilder(
-                        future: findProfilePic(),
-                        builder: (context, snapshot) {
-                          return Avatar.small(
-                            url: choosePic(),
-                            onTap: () {
-                              Navigator.of(context).push(UserProfile.route);
-                            },
-                          );
-                        }))
+              padding: const EdgeInsets.only(right: 24, top: 12),
+              // child: CircleAvatar(
+              //     radius: 26,
+              //     backgroundColor: Color.fromARGB(255, 222, 187, 83),
+              //     child: FutureBuilder(
+              //         future: findProfilePic(),
+              //         builder: (context, snapshot) {
+              //           return Avatar.small(
+              //             url: choosePic(),
+              //             onTap: () {
+              //               Navigator.of(context).push(UserProfile.route);
+              //             },
+              //           );
+              //         }))
 
-                // child: CircleAvatar(
-                //   radius: 26,
-                //   backgroundColor: Color.fromARGB(255, 222, 187, 83),
-                //   child: Avatar.small(
-                //     url: 'assets/images/user1.png',
-                //     onTap: () {
-                //       Navigator.of(context).push(UserProfile.route);
-                //     },
-                //   ),
-                // ),
+              // child: CircleAvatar(
+              //   radius: 26,
+              //   backgroundColor: Color.fromARGB(255, 222, 187, 83),
+              //   child: Avatar.small(
+              //     url: 'assets/images/user1.png',
+              //     onTap: () {
+              //       Navigator.of(context).push(UserProfile.route);
+              //     },
+              //   ),
+              // ),
 
-                // child: GestureDetector(
-                //   onTap: () {
-                //     Navigator.of(context).push(UserProfile.route);
-                //   },
-                //   child: FutureBuilder(
-                //       future: findProfilePic(),
-                //       builder: (context, snapshot) {
-                //         return CircleAvatar(
-                //           radius: 80,
-                //           backgroundImage: choosePic(),
-                //         );
-                //       }),
-                // ),
-                ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(UserProfile.route);
+                },
+                child: FutureBuilder(
+                    future: findProfilePic(),
+                    builder: (context, snapshot) {
+                      return CircleAvatar(
+                        radius: 30,
+                        backgroundImage: choosePic(),
+                      );
+                    }),
+              ),
+            ),
           ),
         ],
       ),
